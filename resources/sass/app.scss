@@ -1,0 +1,62 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+.air {
+   margin-top: 20px;
+   margin-bottom: 20px;
+   width: 100%;
+   display: block;
+}
+
+.corazon {
+   position: absolute;
+   bottom: 8px;
+   right: 5px;
+   cursor: pointer;
+}
+
+.corazon img {
+   width: 22px;
+}
+
+.write {
+   width: 156px;
+   margin: auto;
+   padding: 6px 0px;
+   height: 37px;
+   top: 20px;
+   text-align: center;
+   font-weight: bold;
+   border-radius: 3px;
+   border: 2px solid #0a0a0a;
+   border: 2px solid var(--theme-top-bar-write-color, #0a0a0a);
+   color: #0a0a0a !important;
+   color: var(--theme-top-bar-write-color, #0a0a0a);
+   background: #66e2d5;
+   background: var(--theme-top-bar-write-background, #66e2d5);
+}
+
+.notification {
+   margin-left: 10px;
+   margin-right: 4px;
+   padding: 6px 0px;
+   text-align: center;
+   font-weight: bold;
+   color: #0a0a0a !important;
+   color: var(--theme-top-bar-write-color, #0a0a0a);
+}
+
+.message {
+   margin-right: 10px;
+   padding: 6px 0px;
+   text-align: center;
+   font-weight: bold;
+   color: #0a0a0a !important;
+   color: var(--theme-top-bar-write-color, #0a0a0a);
+}
