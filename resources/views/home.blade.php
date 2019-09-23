@@ -13,20 +13,25 @@
             <a href="#" class="btn btn-primary">Go somewhere</a>
         </div>
         </div>
-    </div>    
+    </div>
+
     <div class="col-md-6">
+    @if(count($Posts) === 0)
+        <h5 class="text-center">No hay post para mostrar. <a href="{{ url('/post/create') }}">Comenzá creando uno ;-)</a></h5>
+    @endif
     @foreach ($Posts as $Post)
-        {{ $Post->user_post_love }}
         <div class="card">
-            <div class="card-header"><a href="./post/{!! urlencode(e($Post->title)) !!}/{{ $Post->id }}">{{ $Post->title }}</a></div>
                 <div class="card-body">
-                    {{ $Post->short_text }}
+                    <h3>{{ $Post->title }}</h3>
                 </div>
                 <div class="card-footer">
                     Autor: <a href="/user/{!! urlencode(e($Post->user->name)) !!}/{{ $Post->user->id }}">{{ $Post->user->name }}</a>
                     <div class="corazon">
-                        <img src="imgs/como.png" id="{{ $Post->id }}" class="love" witdh=""> 
-                        <span id="love-{{ $Post->id }}">{{ $Post->love }}</span>    
+                        @if(isset($Loves[$Post->id]))
+                            <img src="imgs/como.png" id="{{ $Post->id }}" class="love" data-toggle="tooltip" data-placement="top" title="Desfavoritear">  
+                        @else
+                            <img src="imgs/como_empty.png" id="{{ $Post->id }}" class="love" data-toggle="tooltip" data-placement="top" title="Favoritear">  
+                        @endif
                     </div>
             </div>
         </div>

@@ -17,9 +17,20 @@ Route::get('/', function () {
 
 Auth::routes();
 
+/*
+    Get: obtener algo.
+    Post: Crear algo.
+    Put: Modificar algo.
+    Delete: Borrar algo.
+*/
+
 Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/love', 'LoveController@store')->name('love');
 
+Route::get('/profile', 'ProfileController@show')->name('profile');
+
 Route::get('/post/create', 'PostController@create')->name('post');
-Route::post('/post', 'PostController@store')->name('post');
+Route::post('/post', 'PostController@store')->name('post.create');
 Route::get('/post/{title}/{post_id}', 'PostController@show')->name('post.show');
+
+Route::post('/comment', 'CommentController@store')->name('comment.store');

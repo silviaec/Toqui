@@ -4,19 +4,22 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserPostLove extends Model
+class Comment extends Model
 {
      /**
-     * Get the comments for the blog post.
+     * The attributes that are mass assignable.
+     *
+     * @var array
      */
+    protected $fillable = [
+        'text', 'user_id', 'post_id', 'comment_id', 'deleted'
+    ];
+
     public function post()
     {
         return $this->hasOne('App\Post');
     }
 
-     /**
-     * Get the comments for the blog post.
-     */
     public function user()
     {
         return $this->hasOne('App\User');

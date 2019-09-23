@@ -20,20 +20,21 @@ class LoveController extends Controller
     {
         $post = Post::find($request->post);
         $loved = UserPostLove::where('post_id', $request->post)->where('user_id', Auth::id());
-
         if($loved->get()->isEmpty()) {
+            $result = 0;
             $post->increment('love', 1);
             $love = new UserPostLove();
             $love->user_id = Auth::id();
             $love->post_id = $request->post;
             $love->save();
         } else {
+            $result = 1;
             $post->decrement('love', 1);
             $loved->delete();
         }
         
         $post->save();
 
-        return $post->love;
+        return $result;
     }
 }

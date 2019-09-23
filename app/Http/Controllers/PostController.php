@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Post;
+use App\Comment;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -43,16 +45,25 @@ class PostController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|unique:posts|max:255',
             'text' => 'required',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
+        $imageName = null;
+
+        if(isset(request()->image)) {
+            $imageName = time().'.'.request()->image->getClientOriginalExtension();
+            request()->image->move(public_path('images'), $imageName);
+        }
+           
         Post::create([
             'title' => trim($request->title),
             'userId' => Auth::id(),
             'short_text' => $this->cutText($request->text, 50),
+            'images' => $imageName,
             'text' => $request->text
         ]);
 
-        return redirect()->route('home');
+        return redirect()->route('home')->with('success', 'You have successfully upload image.');
         
     }
 
@@ -82,7 +93,8 @@ class PostController extends Controller
     public function show($title, $id)
     {
         $post = Post::where('id', $id)->with(['user', 'userPostLove'])->get();
-        return view('post', ['Post' => $post[0]]);
+        $comments = Comment::select(['comments.*', 'users.name as userAuthorName', 'users.id as userAuthorId'])->where('post_id', $id)->join('users', 'users.id', '=', 'user_id')->get();
+        return view('post', ['Post' => $post[0], 'Comments'=>$comments]);
     }
 
     /**

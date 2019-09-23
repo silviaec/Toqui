@@ -19,17 +19,19 @@
                         </ul>
                     </div>
                 @endif
-
-                <form method="POST" action="{{ route('post') }}">
-                @csrf
-                <div class="form-group">
-                    <label for="formGroupExampleInput">Titular</label>
-                    <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Había una vez un post..." name="title">
-                </div>
-                <div class="form-group">
-                    <textarea id="summernote"name="text"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Guardar</button>
+                <form method="POST" action="{{ route('post.create') }}" enctype="multipart/form-data">
+                    @csrf
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">Titular</label>
+                        <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Había una vez un post..." name="title">
+                    </div>
+                    <div class="form-group">
+                        <textarea id="summernote"name="text"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <input type="file" name="image" class="form-control-file">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
                 </form>                
                 </div>
                 <div class="card-footer">

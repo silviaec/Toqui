@@ -20,8 +20,12 @@
         <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.css" rel="stylesheet">
         <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.js" defer></script>
     <script>
-    
+    $(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
     $(document).ready(function() {
+        $('.toast').toast('show')
+
         $('#summernote').summernote({
         height: 400,   //set editable area's height
         codemirror: { // codemirror options
@@ -37,7 +41,29 @@
            e.preventDefault();
            var id = this.id
             $.post('/love', { post: id }, function(data) {
-                $('#love-'+id).html(data)
+                if(data == 0) {
+                    $('#'+id).attr({ "src": "imgs/como.png" });
+                    $('#'+id).attr({ "data-original-title": "Desfavoritear" });
+                } else { 
+                    $('#'+id).attr({ "src": "imgs/como_empty.png" });
+                    $('#'+id).attr({ "data-original-title": "Favoritear" });
+                }
+            });
+        })
+        $('.submit_comment').click(function (e) {
+           e.preventDefault();
+           var id = $('#postid').val()
+           var text = $('#comment').val()
+            $.post('/comment', { post: id, text: text }, function(data) {
+                var comment =   "<div class=card-body>"+
+                                    "<h5 class='card-title'>"+ data.data.user[0].name +"</h5>"+
+                                    "<h6 class='card-subtitle mb-2 text-muted'> Recientemente </h6>"+
+                                    "<p class='card-text'>"+ data.data.text +"</p>"+
+                                    "<a href=# class='card-link'>Responder</a>"+
+                                    "<a href=# class='card-link'>Eliminnar</a>"+
+                                "</div>"
+                $("#comments").append(comment)
+                $('#comment').val('')
             });
         })
     });
@@ -54,7 +80,7 @@
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/home') }}">
-                    {{ config('app.name', 'Laravel') }}
+                    Toqui
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>

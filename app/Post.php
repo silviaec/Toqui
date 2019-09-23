@@ -12,7 +12,7 @@ class Post extends Model
      * @var array
      */
     protected $fillable = [
-        'title', 'text', 'userId', 'short_text',
+        'title', 'text', 'userId', 'short_text', 'images',
     ];
    
     public function user()
@@ -23,6 +23,11 @@ class Post extends Model
     public function userPostLove()
     {
         return $this->hasMany('App\UserPostLove');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany('App\Comment');
     }
 
 }
