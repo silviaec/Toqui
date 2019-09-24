@@ -7,7 +7,7 @@
     
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header"></div>
+                
                 <div class="card-body">
 
                 @if ($errors->any())
@@ -31,11 +31,11 @@
                     <div class="form-group">
                         <input type="file" name="image" class="form-control-file">
                     </div>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                </form>                
+                              
                 </div>
                 <div class="card-footer">
-                    
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                </form>      
                 </div>
             </div>
         </div>

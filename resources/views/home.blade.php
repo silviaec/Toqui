@@ -22,7 +22,7 @@
     @foreach ($Posts as $Post)
         <div class="card">
                 <div class="card-body">
-                    <h3>{{ $Post->title }}</h3>
+                    <h3> <a href="/post/{!! urlencode(e($Post->title)) !!}/{{ $Post->id }}">{{ $Post->title }} </a></h3>
                 </div>
                 <div class="card-footer">
                     Autor: <a href="/user/{!! urlencode(e($Post->user->name)) !!}/{{ $Post->user->id }}">{{ $Post->user->name }}</a>

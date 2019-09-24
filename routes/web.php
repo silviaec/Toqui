@@ -27,7 +27,8 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/love', 'LoveController@store')->name('love');
 
-Route::get('/profile', 'ProfileController@show')->name('profile');
+Route::get('/profile/{id}', 'ProfileController@show')->name('profile');
+Route::post('/profile', 'ProfileController@update')->name('profile.update');
 
 Route::get('/post/create', 'PostController@create')->name('post');
 Route::post('/post', 'PostController@store')->name('post.create');
