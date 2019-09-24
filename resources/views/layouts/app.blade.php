@@ -24,8 +24,6 @@
   $('[data-toggle="tooltip"]').tooltip()
 })
     $(document).ready(function() {
-        $('.toast').toast('show')
-
         $('#summernote').summernote({
         height: 400,   //set editable area's height
         codemirror: { // codemirror options
@@ -47,6 +45,27 @@
                 } else { 
                     $('#'+id).attr({ "src": "imgs/como_empty.png" });
                     $('#'+id).attr({ "data-original-title": "Favoritear" });
+                }
+            });
+        })
+        $('#passwordChannge').click(function (e) {
+           e.preventDefault();
+           var oldPassword = $('#old-password').val()
+           var newPassword = $('#new-password').val()
+           var renewPassword = $('#renew-password').val()
+
+            $.post('/profile', { old: oldPassword, new: newPassword, renew: renewPassword }, function(data) {
+                if (data.result === 0) {
+                    $('.passwordnotequals').css('display', 'block')
+                }
+                if (data.result === -1) {
+                    $('.passwordincorrect').css('display', 'block')
+                }
+                if (data.result === -3) {
+                    $('.passwordshort"').css('display', 'block')
+                }
+                if (data.result === 1) {
+                    $('.passwordcorrect"').css('display', 'block')
                 }
             });
         })

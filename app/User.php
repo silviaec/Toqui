@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Post;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -62,4 +63,13 @@ class User extends Authenticatable
         return $this->hasMany('App\Comment');
     }
     
+    public function changePassword($password) {
+        if (Hash::check($password, $this->password)) {
+            $this->password = Hash::make($password);
+            $this->save();
+            return ['result' => 1, 'messsage' => 'Contraseña actualizada exitosamente.'];
+        } else {
+            return ['result' => -1, 'messsage' => 'La contraseña actual no es correcta.'];
+        }
+    }
 }
