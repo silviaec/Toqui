@@ -24,6 +24,7 @@ Auth::routes();
     Put: Modificar algo.
     Delete: Borrar algo.
 */
+Route::post('/nuevasil', 'LoveController@store')->name('love');
 
 Route::get('/home', 'HomeController@index')->name('home')->middleware(CheckKlass::class);
 Route::post('/love', 'LoveController@store')->name('love');
