@@ -28,6 +28,12 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home')->middleware(CheckKlass::class);
 Route::post('/love', 'LoveController@store')->name('love');
 
+Route::post('/love', 'LoveController@store')->name('love');
+
+
+Route::post('/love', 'LoveController@store')->name('l');
+
+
 Route::get('/profile/{id}', 'ProfileController@show')->name('profile');
 Route::post('/profile', 'ProfileController@update')->name('profile.update');
 
