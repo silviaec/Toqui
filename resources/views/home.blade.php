@@ -8,13 +8,14 @@
      <div class="card">
         
         <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+            <h5 class="card-title">Mis clases</h5>
+            @foreach ($Klasses as $Klass) 
+                <a href="/class/{{ $Klass->id }}"><p class="card-text">{{ $Klass->name }}</p></a>
+            @endforeach
         </div>
         </div>
     </div>
-
+    
     <div class="col-md-6">
     @if(count($Posts) === 0)
         <h5 class="text-center">No hay post para mostrar. <a href="{{ url('/post/create') }}">Comenzá creando uno ;-)</a></h5>
@@ -42,9 +43,7 @@
      <div class="card">
         
         <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+            <a href="/class/create" class="btn btn-primary">Crear nueva clase</a>
         </div>
         </div>
     </div>    

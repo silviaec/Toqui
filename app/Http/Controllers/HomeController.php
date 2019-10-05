@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Post;
+use App\User;
+
 use App\UserPostLove;
 use Illuminate\Support\Facades\Auth;
+use DB;
 
 
 class HomeController extends Controller
@@ -27,19 +30,15 @@ class HomeController extends Controller
      */
     public function index()
     {   
-        $posts = Post::with(['user'])->orderBy('id', 'DESC')->get();
+        session(['current_klass' => 37]);
+        $posts = Post::with(['user'])->where('klass_id', session('current_klass'))->orderBy('id', 'DESC')->get();
+        $user = User::where('id', Auth::id())->with(['klasses'])->first();
         $loves = UserPostLove::select('post_id')->where('user_id', Auth::id())->get();
 
         foreach($loves as $love) {
             $postThatIlove[$love->post_id] = true;
         }
-        
-        $valores = [
-            "nombre" => "Silvia",
-            "edad" => 30,
-            "nacionalidad"=> 'Argentinna'
-        ];
 
-        return view('home', ['Posts' => $posts, 'Loves' => isset($postThatIlove), 'Datos' => $valores]);
+        return view('home', ['Posts' => $posts, 'Loves' => isset($postThatIlove), 'Klasses' => $user->klasses]);
     }
 }

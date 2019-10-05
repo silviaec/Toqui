@@ -1,4 +1,5 @@
 <?php
+use App\Http\Middleware\CheckKlass;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,14 +25,22 @@ Auth::routes();
     Delete: Borrar algo.
 */
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'HomeController@index')->name('home')->middleware(CheckKlass::class);
 Route::post('/love', 'LoveController@store')->name('love');
 
 Route::get('/profile/{id}', 'ProfileController@show')->name('profile');
 Route::post('/profile', 'ProfileController@update')->name('profile.update');
 
-Route::get('/post/create', 'PostController@create')->name('post');
+Route::post('/upload/images', 'ImageController@store')->name('upload.images');
+
+
+Route::get('/post/create', 'PostController@create')->name('post')->middleware(CheckKlass::class);
 Route::post('/post', 'PostController@store')->name('post.create');
-Route::get('/post/{title}/{post_id}', 'PostController@show')->name('post.show');
+
+Route::get('/post/{title}/{post_id}', 'PostController@show')->name('post.show')->middleware(CheckKlass::class);
+
+Route::get('/class/create', 'KlassController@create')->name('class.create.form');
+Route::post('/class', 'KlassController@store')->name('class.create');
+Route::get('/class/{id}', 'KlassController@change')->name('class.change');
 
 Route::post('/comment', 'CommentController@store')->name('comment.store');

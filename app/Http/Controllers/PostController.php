@@ -31,7 +31,11 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('postWrite');
+        $string = 'Tweet #hashtag #bla #asdas #asdasd#asdsa###';
+        preg_match_all('/#(\w+)/', $string, $allMatches);
+
+        print_r($allMatches[0]); // Outputs 'hashtag'
+        return view('postWrite', ['hash' => md5(time().rand(0, 9))]);
     }
 
     /**
@@ -43,24 +47,27 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'title' => 'required|unique:posts|max:255',
+            'title' => 'required|max:255',
             'text' => 'required',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
-
+        
         $imageName = null;
 
         if(isset(request()->image)) {
             $imageName = time().'.'.request()->image->getClientOriginalExtension();
             request()->image->move(public_path('images'), $imageName);
         }
-           
+
+
         Post::create([
             'title' => trim($request->title),
             'userId' => Auth::id(),
             'short_text' => $this->cutText($request->text, 50),
             'images' => $imageName,
-            'text' => $request->text
+            'text' => $request->text,
+            'klass_id' => session('current_klass'),
+            'hash' => trim($request->hash)
         ]);
 
         return redirect()->route('home')->with('success', 'You have successfully upload image.');
