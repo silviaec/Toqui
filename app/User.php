@@ -47,6 +47,12 @@ class User extends Authenticatable
         return $this->hasMany('App\Post');
     }
 
+ 
+    public function klasses()
+    {
+        return $this->belongsToMany('App\Klass')->using('App\KlassUser');
+    }
+
      /**
      * Get the comments for the blog post.
      */

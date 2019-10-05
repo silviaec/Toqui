@@ -13,28 +13,91 @@
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <!-- include libraries(jQuery, bootstrap) -->
-        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script> 
-
         <!-- include summernote css/js -->
-        <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.css" rel="stylesheet">
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.js" defer></script>
+        <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.css" rel="stylesheet">
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.js" defer></script>
     <script>
     $(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-})
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+    
     $(document).ready(function() {
         $('#summernote').summernote({
-        height: 400,   //set editable area's height
-        codemirror: { // codemirror options
-            theme: 'monokai'
-        }
+            height: 400,   //set editable area's height
+            codemirror: { // codemirror options
+                theme: 'monokai'
+            },
+            // airMode: true,
+            focus: true,
+            placeholder: 'Había una vez una publicación...',
+            toolbar: [
+                ['style', ['bold', 'italic', 'underline']],
+                ['color', ['color']],
+                ['table', ['table']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['link'],
+                ['style', ['style']],
+                ['Insert', ['picture']],
+            ],
+            callbacks: {
+                onImageUpload: function(image) {
+                    editor = $(this);
+                    uploadImageContent(image[0], editor);
+                }
+            },
+            hint: [{
+                    mentions: ['jayden', 'sam', 'alvin', 'david'],
+                    match: /\B#(\w*)$/,
+                    search: function (keyword, callback) {
+                        callback($.grep(this.mentions, function (item) {
+                        return item.indexOf(keyword) == 0;
+                        }));
+                    },
+                    content: function (item) {
+                        return '#' + item + ' ';
+                    }    
+                }, {
+                    mentions: ['jayden', 'sam', 'alvin', 'david'],
+                    match: /\B@(\w*)$/,
+                    search: function (keyword, callback) {
+                        callback($.grep(this.mentions, function (item) {
+                        return item.indexOf(keyword) == 0;
+                        }));
+                    },
+                    content: function (item) {
+                        return '@' + item + ' ';
+                    }    
+                }
+            ]
         });
        $.ajaxSetup({
            headers: {
                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
            }
        });
+       function uploadImageContent(image, editor) {
+            var data = new FormData();
+            data.append("image", image);
+            data.append("hash", $('#hash').val());
+                $.ajax({
+                    url: '/upload/images',
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    type: "post",
+                    success: function(url) {
+                        var image = $('<img>').attr({
+                            'src': url,
+                            'style': 'width: 100%'
+                        });
+                        $(editor).summernote("insertNode", image[0]);
+                    },
+                        error: function(data) {
+                        console.log(data);
+                }
+            })
+        }
        $('.love').click(function (e) {
            e.preventDefault();
            var id = this.id
