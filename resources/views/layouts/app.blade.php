@@ -193,7 +193,7 @@
                                 <a class="nav-link notification" href="#" role="button" aria-haspopup="true"  v-pre>
                                     <img src="{{ url('/imgs/notification.png') }}" width="35">
                                 </a>
-                                <a class="nav-link message" href="#" role="button" aria-haspopup="true"  v-pre>
+                                <a class="nav-link message" href="{{ url('/messages') }}" role="button" aria-haspopup="true"  v-pre>
                                     <img src="{{ url('/imgs/avion.png') }}">
                                 </a>
                             <li class="nav-item dropdown" style="margin: auto;">
