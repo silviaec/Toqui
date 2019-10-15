@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Post;
+use App\HashtagPost;
 use App\Comment;
+use App\Hashtag;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,10 +33,6 @@ class PostController extends Controller
      */
     public function create()
     {
-        $string = 'Tweet #hashtag #bla #asdas #asdasd#asdsa###';
-        preg_match_all('/#(\w+)/', $string, $allMatches);
-
-        print_r($allMatches[0]); // Outputs 'hashtag'
         return view('postWrite', ['hash' => md5(time().rand(0, 9))]);
     }
 
@@ -59,16 +57,34 @@ class PostController extends Controller
             request()->image->move(public_path('images'), $imageName);
         }
 
+        preg_match_all('/#(\w+)/', $request->text, $allHashtags);
 
-        Post::create([
-            'title' => trim($request->title),
-            'userId' => Auth::id(),
-            'short_text' => $this->cutText($request->text, 50),
-            'images' => $imageName,
-            'text' => $request->text,
-            'klass_id' => session('current_klass'),
-            'hash' => trim($request->hash)
-        ]);
+        $post = new Post;
+        $post->title = trim($request->title);
+        $post->userId = Auth::id();
+        $post->short_text = $this->cutText($request->text, 50);
+        $post->images = $imageName;
+        $post->text = $request->text;
+        $post->klass_id = session('current_klass');
+        $post->hash = trim($request->hash);
+        $post->save();
+
+        foreach($allHashtags[0] as $hashtag) {
+            $hashTagExist = Hashtag::where('hashtag', $hashtag)->where('klass_id', session('current_klass'))->get();
+            if($hashTagExist->isEmpty()) {
+                $newHashtag = new Hashtag;
+                $newHashtag->hashtag = $hashtag;
+                $newHashtag->klass_id = session('current_klass');
+                $newHashtag->save();
+                $hashtagId = $newHashtag->id;
+            } else {
+                $hashtagId = $hashTagExist[0]->id;
+            }
+            $hashtagPost = new HashtagPost;
+            $hashtagPost->hashtag_id = $hashtagId;
+            $hashtagPost->post_id = $post->id;
+            $hashtagPost->save();
+        }
 
         return redirect()->route('home')->with('success', 'You have successfully upload image.');
         

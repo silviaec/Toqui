@@ -30,4 +30,8 @@ class Post extends Model
         return $this->hasMany('App\Comment');
     }
 
+    public function hashtags()
+    {
+        return $this->belongsToMany('App\Hashtag')->using('App\HashtagPost');
+    }
 }

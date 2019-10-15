@@ -7,8 +7,10 @@
         </div>
         <div class="col-md-8">
             <div class="card">
-                <div class="card-body" style="font-family: 'Georgia, Cambria, Times New Roman, Times, serif'; font-size: 23px;">
-                <h3>{{ $Post->title }}</h3>
+                <div class="card-body" style="font-family: 'Georgia, Cambria, Times New Roman, Times, serif'; font-size: 18px;">
+                <h2>{{ $Post->title }}</h2>
+                <p>{{ $Post->created_at }}</p>
+
                 {!! $Post->text !!}  
                 
                 @if ($Post->images)

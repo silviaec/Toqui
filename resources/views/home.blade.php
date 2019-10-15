@@ -24,6 +24,9 @@
         <div class="card">
                 <div class="card-body">
                     <h3> <a href="/post/{!! urlencode(e($Post->title)) !!}/{{ $Post->id }}">{{ $Post->title }} </a></h3>
+                    @foreach ($Post->hashtags as $hashtag)
+                        <a href="?filter={{ $hashtag->hashtag }}">{{ $hashtag->hashtag }}</a>
+                    @endforeach
                 </div>
                 <div class="card-footer">
                     Autor: <a href="/user/{!! urlencode(e($Post->user->name)) !!}/{{ $Post->user->id }}">{{ $Post->user->name }}</a>
@@ -44,6 +47,8 @@
         
         <div class="card-body">
             <a href="/class/create" class="btn btn-primary">Crear nueva clase</a>
+            <a href="/class/login" class="btn btn-primary">Unirse a una clase</a>
+
         </div>
         </div>
     </div>    

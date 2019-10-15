@@ -20,8 +20,46 @@
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
     })
-    
     $(document).ready(function() {
+       $.ajaxSetup({
+           headers: {
+               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+           }
+       });
+
+       var eventNotification = new EventSource("/notifications/stream/");
+       eventNotification.onmessage = function(e) {    
+        var notification = $.parseJSON(e.data);
+        console.log(notification)
+        if(notification.length > 0) {
+            notification.forEach((n) => {
+                if(n.type === 'message') { 
+                   $current = $('#contact-'+n.reference).addClass('notificated')[0].outerHTML;
+                   console.log($current)
+                   
+                   $('#contact-'+n.reference).remove();
+                   
+                   $(".messages-container").prepend($current);
+                   var currentChat = $('#user_id_to').val();
+                   if(currentChat == n.reference) {
+                     getMessages(n.reference)
+                   }
+                }
+            });
+        }
+       }
+       
+        getHashtags()
+        function getHashtags() {
+            $.get('/hashtags', function(result) {
+                var hashtags = $.parseJSON(result);
+                var hashtagsPost = hashtags.map((e) => {
+                    return e.hashtag.replace(/#/g, '');
+                })
+                localStorage.setItem('hastags', JSON.stringify(hashtagsPost));  
+            })
+        }
+
         $('#summernote').summernote({
             height: 400,   //set editable area's height
             codemirror: { // codemirror options
@@ -43,10 +81,15 @@
                 onImageUpload: function(image) {
                     editor = $(this);
                     uploadImageContent(image[0], editor);
+                },
+                onPaste: function (e) {
+                    var bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('Text');
+                    e.preventDefault();
+                    document.execCommand('insertText', false, bufferText);
                 }
             },
             hint: [{
-                    mentions: ['jayden', 'sam', 'alvin', 'david'],
+                    mentions: JSON.parse(localStorage.getItem('hastags')),
                     match: /\B#(\w*)$/,
                     search: function (keyword, callback) {
                         callback($.grep(this.mentions, function (item) {
@@ -57,7 +100,7 @@
                         return '#' + item + ' ';
                     }    
                 }, {
-                    mentions: ['jayden', 'sam', 'alvin', 'david'],
+                    mentions: JSON.parse(localStorage.getItem('classmates')),
                     match: /\B@(\w*)$/,
                     search: function (keyword, callback) {
                         callback($.grep(this.mentions, function (item) {
@@ -70,11 +113,6 @@
                 }
             ]
         });
-       $.ajaxSetup({
-           headers: {
-               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-           }
-       });
        function uploadImageContent(image, editor) {
             var data = new FormData();
             data.append("image", image);
@@ -98,7 +136,50 @@
                 }
             })
         }
-       $('.love').click(function (e) {
+        function getMessages(id) {
+            $.get('/messages/inbox/'+id, function(result) {
+                var messages = $.parseJSON(result);
+                messages.forEach((m) => { 
+                    $('#inbox').append("<div class='writer'>"+m.name+":</div><div class='date'>"+m.created_at+"</div><p>"+m.text+"</p>")
+                });
+
+            }).done(function() {
+                $("#inbox").animate({ scrollTop: $('#inbox').prop("scrollHeight")}, 0);
+            })
+        }
+        $('.contact-inbox').click(function (e) {
+
+            var height = $(window).height();
+            $('.inbox-content').height(height-330);
+            $('#inbox').height(height-330);
+
+           e.preventDefault();
+           var id = this.id
+            console.log(id)
+           $.post('/notifications/ok', { user_id_to: id }, function(d) {
+               console.log('llego aca')
+                $('#contact-'+id).removeClass('notificated');
+           });
+
+           $('#user_id_to').val(id);
+           $('#inbox').html('');
+           getMessages(id);
+        })
+
+        $('.add-message').click(function (e) {
+           e.preventDefault();
+           var id = $('#user_id_to').val();
+           var message = $('#message').val();
+            $.post('/message', { user_id_to: id, message: message }, function(data) {
+                $('#inbox').append("<div class='writer'>"+data.name+":</div><div class='date'>Recién</div><p>"+message+"</p>")  
+            });
+            $("#inbox").animate({ scrollTop: $('#inbox').prop("scrollHeight")}, 1000);
+            $('#message').val('')
+            $.post('/notifications/ok', { user_id_to: id }, function(d) {
+                $('#contact-'+id).removeClass('notificated');
+            });
+        })
+        $('.love').click(function (e) {
            e.preventDefault();
            var id = this.id
             $.post('/love', { post: id }, function(data) {

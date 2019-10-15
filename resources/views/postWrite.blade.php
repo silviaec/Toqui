@@ -6,6 +6,8 @@
         <div class="col-md-12">
             <div class="card"> 
                 <div class="card-body">
+                <input type="hidden" name="hashtags" id="hashtags" value="[]">
+
                 @if ($errors->any())
                     <div class="alert alert-danger">
                         <ul>

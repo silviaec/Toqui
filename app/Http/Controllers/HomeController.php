@@ -30,8 +30,7 @@ class HomeController extends Controller
      */
     public function index()
     {   
-        session(['current_klass' => 37]);
-        $posts = Post::with(['user'])->where('klass_id', session('current_klass'))->orderBy('id', 'DESC')->get();
+        $posts = Post::with(['user', 'hashtags'])->where('klass_id', session('current_klass'))->orderBy('id', 'DESC')->get();
         $user = User::where('id', Auth::id())->with(['klasses'])->first();
         $loves = UserPostLove::select('post_id')->where('user_id', Auth::id())->get();
 
@@ -40,5 +39,10 @@ class HomeController extends Controller
         }
 
         return view('home', ['Posts' => $posts, 'Loves' => isset($postThatIlove), 'Klasses' => $user->klasses]);
+    }
+
+    public function saludar($id) {
+       $user = User::find($id);
+       return "Hola ".$user->name;
     }
 }
