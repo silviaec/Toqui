@@ -3,18 +3,21 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Post extends Model
 {
+    use SoftDeletes;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'title', 'text', 'userId', 'short_text', 'images', 'klass_id', 'hash'
+        'title', 'text', 'userId', 'short_text', 'images', 'klass_id', 'hash', 'created_at'
     ];
-   
+
     public function user()
     {
         return $this->belongsTo('App\User', 'userId');

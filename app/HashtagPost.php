@@ -3,9 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class HashtagPost extends Pivot
 {
+    use SoftDeletes;
     protected $table = 'hashtag_post';
 
      /**

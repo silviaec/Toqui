@@ -42,10 +42,48 @@ class KlassController extends Controller
      */
     public function change($klass_id)
     {
+        User::where('id', Auth::id())->update(['last_klass_id' => $klass_id]);
         session(['current_klass' => $klass_id]);
         return redirect()->route('home');
     }
 
+    public function desactive($id)
+    {
+        Klass::where('user_id', Auth::id())->where('id', $id)->update(['active' => 0]);
+        return redirect()->route('class.list');
+    }
+
+    public function active($id)
+    {
+        Klass::where('user_id', Auth::id())->where('id', $id)->update(['active' => 1]);
+        return back();
+    }
+
+    public function remove($id)
+    {
+        Klass::where('user_id', Auth::id())->where('id', $id)->delete();
+        return back();
+    }
+
+    public function myClasses()
+    {
+        $user = User::where('id', Auth::id())->with(['klasses'])->first();
+        return view('klass-list', ['Classes' => $user->klasses, 'UserID' => Auth::id()]);
+    }
+
+    public function removeUser($id, $klassId)
+    {
+        $klass = Klass::where('user_id', Auth::id())->where('id', $klassId)->first();
+        $remove = KlassUser::where('user_id', $id)->where('klass_id', $klass->id)->delete();
+
+        return back();
+    }
+
+    public function myClass($name, $id)
+    {
+        $klass = Klass::where('user_id', Auth::id())->where('id', $id)->with(['users'])->first();
+        return view('klass', ['Klass' => $klass]);
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -53,16 +91,20 @@ class KlassController extends Controller
      */
     public function join(Request $request)
     {
-        $getKlass = Klass::where('code', $request->code)->get();
-        $klass = $getKlass[0];
-        if (!$getKlass->isEmpty()) {
+        $getKlass = Klass::where('code', $request->code)->first();
+        $klass = $getKlass;
+        if ($getKlass) {
             $userClass = new KlassUser;
             $userClass->user_id = Auth::id();
             $userClass->klass_id = $klass->id;
             $userClass->active = 1;
             $userClass->save();
-            return redirect()->route('class.login.form')->with('KlassName', $klass->name);
+
+            User::where('id', Auth::id())->update(['last_klass_id' => $userClass->id]);
+            session(['current_klass' => $klass->id]);
+            return redirect()->route('home')->with('KlassName', $klass->name);
         }
+        return back();
     }
 
     /**

@@ -38,8 +38,23 @@ class HashtagController extends Controller
         $hashtag = new Hashtag;
         $hashtag->hashtag = $request->hashtag;
         $hashtag->klass_id = session('current_klass');
+        $hashtag->color = $this->getRandomColor();
         $hashtag->save();
         return $hashtag->id;
+    }
+
+    function getRandomColor() {
+        $color[] = '#ec82cc';
+        $color[] = '#ff9aed';
+        $color[] = '#6c87e0';
+        $color[] = '#5e7153';
+        $color[] = '#537239';
+        $color[] = '#d95e0e';
+        $color[] = '#fa721c';
+        $color[] = '#514f76';
+        $color[] = '#514f76';
+        $color[] = '#7c5e84';
+        return $color[rand(0, count($color)-1)];
     }
 
      /**

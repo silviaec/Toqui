@@ -6,6 +6,11 @@
 
 require('./bootstrap');
 
+if ($(".container").hasClass('module-post-create')) {
+    require('./write');
+}
+
+
 window.Vue = require('vue');
 
 /**
