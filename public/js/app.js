@@ -49338,6 +49338,10 @@ module.exports = function(module) {
  */
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
+if ($(".container").hasClass('module-post-create')) {
+  __webpack_require__(/*! ./write */ "./resources/js/write.js");
+}
+
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 /**
  * The following block of code may be used to automatically register your
@@ -49489,6 +49493,99 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/write.js":
+/*!*******************************!*\
+  !*** ./resources/js/write.js ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(document).ready(function () {
+  document.emojiSource = "/modules/tam-emoji/img";
+  $('#summernote').summernote({
+    height: 400,
+    //set editable area's height
+    codemirror: {
+      // codemirror options
+      theme: 'monokai'
+    },
+    // airMode: true,
+    focus: true,
+    placeholder: 'Había una vez una publicación...',
+    toolbar: [['insert', ['emoji']], ['style', ['bold', 'italic', 'underline']], ['color', ['color']], ['table', ['table']], ['para', ['ul', 'ol', 'paragraph']], ['link'], ['style', ['style']], ['Insert', ['picture']]],
+    callbacks: {
+      onImageUpload: function onImageUpload(image) {
+        editor = $(this);
+        uploadImageContent(image[0], editor);
+      },
+      onPaste: function onPaste(e) {
+        var bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('Text');
+        e.preventDefault();
+        document.execCommand('insertText', false, bufferText);
+      }
+    },
+    hint: [{
+      mentions: JSON.parse(localStorage.getItem('hastags')),
+      match: /\B#(\w*)$/,
+      search: function search(keyword, callback) {
+        callback($.grep(this.mentions, function (item) {
+          return item.indexOf(keyword) == 0;
+        }));
+      },
+      content: function content(item) {
+        return '#' + item + ' ';
+      }
+    }, {
+      mentions: JSON.parse(localStorage.getItem('classmates')),
+      match: /\B@(\w*)$/,
+      search: function search(keyword, callback) {
+        callback($.grep(this.mentions, function (item) {
+          return item.indexOf(keyword) == 0;
+        }));
+      },
+      content: function content(item) {
+        return '@' + item + ' ';
+      }
+    }]
+  });
+
+  function uploadImageContent(image, editor) {
+    var data = new FormData();
+    data.append("image", image);
+    data.append("hash", $('#hash').val());
+    $.ajax({
+      url: '/upload/images',
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: data,
+      type: "post",
+      success: function success(url) {
+        var image = $('<img>').attr({
+          'src': url,
+          'style': 'width: 100%'
+        });
+        $(editor).summernote("insertNode", image[0]);
+      },
+      error: function error(data) {}
+    });
+  }
+
+  function getHashtags() {
+    $.get('/hashtags', function (result) {
+      var hashtags = $.parseJSON(result);
+      var hashtagsPost = hashtags.map(function (e) {
+        return e.hashtag.replace(/#/g, '');
+      });
+      localStorage.setItem('hastags', JSON.stringify(hashtagsPost));
+    });
+  }
+
+  getHashtags();
+});
+
+/***/ }),
+
 /***/ "./resources/sass/app.scss":
 /*!*********************************!*\
   !*** ./resources/sass/app.scss ***!
@@ -49507,8 +49604,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/user/facultad/toki/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/user/facultad/toki/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/user/toqui/toqui/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/user/toqui/toqui/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
